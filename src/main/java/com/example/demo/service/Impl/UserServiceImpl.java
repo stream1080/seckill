@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public boolean addUser(User user) {
-        if (user.getUserId() == null && !"".equals(user.getUserId())) {
+        if (user.getUserId() != null && !"".equals(user.getUserId())) {
             try {
                 int effectedNum = userDao.insertUser(user);
                 if (effectedNum > 0) {

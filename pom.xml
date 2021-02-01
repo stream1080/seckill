@@ -34,6 +34,7 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!--mybatis相关的依赖-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -51,10 +52,25 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--junit测试相关的依赖-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- 添加swagger2相关功能 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+        <!-- 添加swagger-ui相关功能 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
         </dependency>
 
     </dependencies>

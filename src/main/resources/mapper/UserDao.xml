@@ -21,7 +21,7 @@
         INSERT INTO
             tb_user(user_name, age)
         VALUES
-        (#{userName},#{age})
+            (#{userName},#{age})
     </insert>
 
     <update id="updateUser" parameterType="com.example.demo.entity.User">
@@ -30,15 +30,15 @@
             <if test="userName != null">user_name=#{userName},</if>
             <if test="age != null">age=#{age}</if>
         </set>
-        where user_id=#{userId}
+        where
+            user_id = #{userId}
     </update>
 
     <delete id="deleteUser">
         DELETE FROM
             tb_user
         WHERE
-                user_id =
-                #{userId}
+            user_id = #{userId}
     </delete>
 
 </mapper>
