@@ -25,7 +25,7 @@ public class UserDaoTest {
     private UserDao userDao;
 
     @Test
-
+    //@Ignore
     public void testAQueryUser() {
         List<User> userList = userDao.queryUser();
         // 验证预期值和实际值是否相符
@@ -34,14 +34,14 @@ public class UserDaoTest {
 
 
     @Test
-
+    //@Ignore
     public void testCQueryUserById() {
         User user = userDao.queryUserById(1);
         assertEquals("admin", user.getUserName());
     }
 
     @Test
-
+    //@Ignore
     public void testBInsertUser() {
         //创建一个用户对象
         User user = new User();
@@ -57,7 +57,7 @@ public class UserDaoTest {
     }
 
     @Test
-
+    //@Ignore
     public void testDUpateUser() {
         List<User> userList = userDao.queryUser();
         for (User user : userList) {
@@ -72,7 +72,7 @@ public class UserDaoTest {
     }
 
     @Test
-
+    //@Ignore
     public void testEDeleteUser() {
         List<User> userList = userDao.queryUser();
         for (User user : userList) {

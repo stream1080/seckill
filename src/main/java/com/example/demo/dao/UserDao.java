@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Mapper
-@Repository
+@Mapper       //标识这个类是一个数据访问层的bean，由spring容器管理
+@Repository   //将这个mapper的bean注册到spring容器，不加也行
 public interface UserDao {
 
     /**

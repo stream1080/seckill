@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@Service  //标识这个bean是service层的，并交给spring容器管理
 public class UserServiceImpl implements UserService {
 
     @Autowired

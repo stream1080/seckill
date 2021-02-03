@@ -28,6 +28,7 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
+        <!--mysql数据库-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -59,14 +60,14 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- 添加swagger2相关功能 -->
+        <!-- 引入swagger2相关依赖 -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>2.9.2</version>
         </dependency>
 
-        <!-- 添加swagger-ui相关功能 -->
+        <!-- 引入添加swagger-ui相关依赖 -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>

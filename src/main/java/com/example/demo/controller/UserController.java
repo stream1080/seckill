@@ -4,6 +4,8 @@ import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin")
+@Api(tags = "用户管理API") // 类文档显示内容
+@RequestMapping("/admin")   //地址映射的注解
 public class UserController {
 
     @Autowired
@@ -26,6 +29,7 @@ public class UserController {
      * 获取用户列表
      * @return
      */
+    @ApiOperation(value = "获取用户列表信息") // 接口文档显示内容
     @RequestMapping(value = "listuser",method = RequestMethod.GET)
     private Map<String,Object> listUser(){
         Map<String,Object> modelMap = new HashMap<String,Object>();
@@ -39,6 +43,7 @@ public class UserController {
      *
      * @return
      */
+    @ApiOperation(value = "通过用户Id获取用户信息") // 接口文档显示内容
     @RequestMapping(value = "/getuserbyid", method = RequestMethod.GET)
     private Map<String, Object> getUserById(Integer userId) {
         Map<String, Object> modelMap = new HashMap<String, Object>();
@@ -59,6 +64,7 @@ public class UserController {
      * @throws JsonMappingException
      * @throws JsonParseException
      */
+    @ApiOperation(value = "添加用户信息") // 接口文档显示内容
     @RequestMapping(value = "/adduser", method = RequestMethod.POST)
     private Map<String,Object> addUser(@RequestBody User user)
             throws JsonParseException, JsonMappingException, IOException {
@@ -78,6 +84,7 @@ public class UserController {
      * @throws JsonMappingException
      * @throws JsonParseException
      */
+    @ApiOperation(value = "修改用户信息") // 接口文档显示内容
     @RequestMapping(value = "/modifyuser", method = RequestMethod.POST)
     private Map<String, Object> modifyUser(@RequestBody User user)
             throws JsonParseException, JsonMappingException, IOException {
@@ -92,6 +99,7 @@ public class UserController {
      * @param userId
      * @return
      */
+    @ApiOperation(value = "删除用户信息") // 接口文档显示内容
     @RequestMapping(value = "/removeuser", method = RequestMethod.GET)
     private Map<String, Object> removeUser(Integer userId) {
         Map<String, Object> modelMap = new HashMap<String, Object>();

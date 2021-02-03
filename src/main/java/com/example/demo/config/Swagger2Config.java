@@ -33,8 +33,8 @@ public class Swagger2Config {
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("演示项目API") // 标题
-                .description("学习Swagger2的演示项目") // 描述
+                .title("项目API") // 标题
+                .description("整个项目的各个API") // 描述
                 .termsOfServiceUrl("http://www.baidu.com") // 服务网址，一般写公司地址
                 .version("1.0") // 版本
                 .build();
