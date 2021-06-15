@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.dao.ProductDao;
 import com.example.demo.entity.Product;
+import com.example.demo.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,9 @@ class DemoApplicationTests {
 
     @Autowired
     private ProductDao productDao;
+
+    @Autowired
+    private ProductService productService;
     private static final String KILL_PRODUCT_LIST = "kill_product_list";
 
     @Test
@@ -78,6 +82,24 @@ class DemoApplicationTests {
         System.out.println(productList.get(0));
         assertEquals("productList", productList.get(0));
     }
+
+    @Test
+    public void testProductListCache(){
+        List<Product> productList = productService.getProductListCache();
+        for (Product product: productList) {
+            System.out.println(product.getProductTitle());
+        }
+    }
+
+    @Test
+    public void testProductByIdCache(){
+        for (int i = 0; i < 5; i++) {
+            Product product = productService.getProductByIdCache(701);
+            System.out.println(product.getProductTitle());
+        }
+    }
+
+
 
 
 

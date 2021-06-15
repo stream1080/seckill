@@ -7,6 +7,7 @@ import com.example.demo.entity.Product;
 import com.example.demo.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Resource
     private RedisTemplate redisTemplate;
+
     private static final String PRODUCT_BYID = "product_byid";
 
     @Override
@@ -41,9 +43,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public boolean addItem(Item item) {
         Product product = productDao.queryProductById(item.getProductId());
-        if (item.getItemId() == null && !"".equals(item.getItemId()) && product.getSales()>0) {
+        if (item.getItemId() == null && !"".equals(item.getItemId()) && product.getStock()>0) {
             try {
-                product.setSales(product.getSales()-product.getSales());
+                product.setStock(product.getStock()-product.getStock());
                 int effec = productDao.updateProduct(product);
                 int effectedNum = itemDao.insertItem(item);
                 if (effectedNum > 0 && effec > 0) {
@@ -102,9 +104,9 @@ public class ItemServiceImpl implements ItemService {
     public boolean addItemKill(Item item) {
         Map<Integer,Product> productMap = redisTemplate.opsForHash().entries("PRODUCT_BYID");
         Product product = productMap.get(item.getProductId());
-        if (item.getItemId() == null && !"".equals(item.getItemId()) && product.getSales()>0) {
+        if (item.getItemId() == null && !"".equals(item.getItemId()) && product.getStock()>0) {
             try {
-                product.setSales(product.getSales()-item.getAmount());
+                product.setStock(product.getStock()-item.getAmount());
                 productMap.put(product.getProductId(),product);
                 redisTemplate.opsForHash().putAll("PRODUCT_BYID",productMap);
                 redisTemplate.expire("PRODUCT_BYID",10000, TimeUnit.MILLISECONDS);

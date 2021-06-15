@@ -3,23 +3,33 @@ package com.example.demo.service.Impl;
 import com.example.demo.dao.ProductDao;
 import com.example.demo.entity.Product;
 import com.example.demo.service.ProductService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 
 @Service  //标识这个bean是service层的，并交给spring容器管理
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductDao productDao;
-    @Resource
-    private RedisTemplate redisTemplate;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    private Gson gson = new Gson();
+
     private static final String KILL_PRODUCT_LIST = "kill_product_list";
 
     @Override
@@ -92,65 +102,33 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getProductListCache() {
-        try{
-            Map<String,List> productMap = redisTemplate.opsForHash().entries(KILL_PRODUCT_LIST);
-            List<Product> productList = null;
-            if(productMap.isEmpty()){
-                productList = getProductList();
-                productMap.put(KILL_PRODUCT_LIST,productList);
-                redisTemplate.opsForHash().putAll(KILL_PRODUCT_LIST,productMap);
-                redisTemplate.expire(KILL_PRODUCT_LIST,100000, TimeUnit.MILLISECONDS);
-                return productList;
-            }
-            productList = productMap.get(KILL_PRODUCT_LIST);
+        String productJson = redisTemplate.opsForValue().get("productJson");
+        if (StringUtils.isEmpty(productJson)) {
+            List<Product> productList = getProductList();
+            String s = gson.toJson(productList);
+            redisTemplate.opsForValue().set("productJson", s);
+            System.out.println("查数据库");
             return productList;
-        }catch (Exception e){
-            System.out.println("查询异常"+ e.getMessage());
-            return getProductList();
         }
+        List<Product> result = gson.fromJson(productJson, new TypeToken<List<Product>>(){}.getType());
+        System.out.println("查缓存");
+        return result;
     }
 
 
     @Override
     public Product getProductByIdCache(int productId) {
-        try{
-            Map<Integer,Product> productMap = redisTemplate.opsForHash().entries("PRODUCT_BYID");
-            Product product = null;
-            if(productMap.isEmpty()){
-                productMap.put(productId,getProductById(productId));
-                redisTemplate.opsForHash().putAll("PRODUCT_BYID",productMap);
-                redisTemplate.expire("PRODUCT_BYID",10000, TimeUnit.MILLISECONDS);
-                System.out.println("缓存");
-                return getProductById(productId);
-            }
-            product = productMap.get(productId);
+        String productCache = redisTemplate.opsForValue().get(String.valueOf(productId));
+        if (StringUtils.isEmpty(productCache)) {
+            Product product = getProductById(productId);
+            String s = gson.toJson(product);
+            redisTemplate.opsForValue().set(String.valueOf(productId), s);
+            System.out.println("查数据库");
             return product;
-        }catch (Exception e){
-            System.out.println("查询异常"+ e.getMessage());
-            return getProductById(productId);
         }
-
+        Product result = gson.fromJson(productCache, Product.class);
+        System.out.println("查缓存");
+        return result;
     }
-
-
 }
-//
-//
-//    @Override
-//    public List<Product> findAllCache() {
-//        try{
-//            Map<String,Product> productMap = redisTemplate.opsForHash().entries(KILL_PRODUCT_LIST);
-//            List<Product> productList = null;
-//            if(productMap.isEmpty()){
-//                productList = productDao.queryProduct();
-//                redisTemplate.opsForHash().putAll(KILL_PRODUCT_LIST,productMap);
-//                redisTemplate.expire(KILL_PRODUCT_LIST,10000, TimeUnit.MILLISECONDS);
-//                return productList;
-//            }
-//            // productList = productList.add(productMap);
-//            return productList;
-//        }catch (Exception e){
-//            //logger.error("findAllcache error",e);
-//            return getProductList();
-//        }
-//    }
+

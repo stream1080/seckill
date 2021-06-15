@@ -5,12 +5,12 @@
 <mapper namespace="com.example.demo.dao.ProductDao">
 
     <select id="queryProduct" resultType="com.example.demo.entity.Product">
-        SELECT product_id,product_title,price,description,img_url,sales
+        SELECT product_id,product_title,price,description,img_url,stock
         FROM product
     </select>
 
     <select id="queryProductById" resultType="com.example.demo.entity.Product">
-        SELECT product_id,product_title,price,description,img_url,sales
+        SELECT product_id,product_title,price,description,img_url,stock
         FROM product
         WHERE
             product_id = #{productId}
@@ -19,9 +19,9 @@
     <insert id="insertProduct" useGeneratedKeys="true" keyProperty="productId"
             keyColumn="productId" parameterType="com.example.demo.entity.Product">
         INSERT INTO
-            product(product_title,price,description,img_url,sales)
+            product(product_title,price,description,img_url,stock)
         VALUES
-        (#{productTitle},#{price},#{description},#{imgUrl},#{sales})
+        (#{productTitle},#{price},#{description},#{imgUrl},#{stock})
     </insert>
 
     <update id="updateProduct" parameterType="com.example.demo.entity.Product">
@@ -31,7 +31,7 @@
             <if test="price != null">price=#{price},</if>
             <if test="description != null">description=#{description},</if>
             <if test="imgUrl != null">img_url=#{imgUrl},</if>
-            <if test="sales != null">sales=#{sales}</if>
+            <if test="stock != null">stock=#{stock}</if>
         </set>
         where
         product_id = #{productId}
