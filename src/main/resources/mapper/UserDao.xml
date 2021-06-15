@@ -5,13 +5,13 @@
 <mapper namespace="com.example.demo.dao.UserDao">
 
     <select id="queryUser" resultType="com.example.demo.entity.User">
-        SELECT user_id, user_name, age
-        FROM tb_user
+        SELECT user_id, user_name, age,sex,telephone,address,password,user_type
+        FROM user
     </select>
 
     <select id="queryUserById" resultType="com.example.demo.entity.User">
-        SELECT user_id, user_name, age
-        FROM tb_user
+        SELECT user_id, user_name, age,sex,telephone,address,password,user_type
+        FROM user
         WHERE
             user_id = #{userId}
     </select>
@@ -19,16 +19,21 @@
     <insert id="insertUser" useGeneratedKeys="true" keyProperty="userId"
             keyColumn="userId" parameterType="com.example.demo.entity.User">
         INSERT INTO
-            tb_user(user_name, age)
+            user(user_name,age,sex,telephone,address,password,user_type)
         VALUES
-            (#{userName},#{age})
+            (#{userName},#{age},#{sex},#{telephone},#{address},#{password},#{userType})
     </insert>
 
     <update id="updateUser" parameterType="com.example.demo.entity.User">
-        update tb_user
+        update user
         <set>
             <if test="userName != null">user_name=#{userName},</if>
-            <if test="age != null">age=#{age}</if>
+            <if test="age != null">age=#{age},</if>
+            <if test="sex != null">sex=#{sex},</if>
+            <if test="telephone != null">telephone=#{telephone},</if>
+            <if test="address != null">address=#{address},</if>
+            <if test="password != null">password=#{password},</if>
+            <if test="userType != null">user_type=#{userType}</if>
         </set>
         where
             user_id = #{userId}
@@ -36,7 +41,7 @@
 
     <delete id="deleteUser">
         DELETE FROM
-            tb_user
+            user
         WHERE
             user_id = #{userId}
     </delete>

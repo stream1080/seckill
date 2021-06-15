@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.ProductDao">
+
+    <select id="queryProduct" resultType="com.example.demo.entity.Product">
+        SELECT product_id,product_title,price,description,img_url,sales
+        FROM product
+    </select>
+
+    <select id="queryProductById" resultType="com.example.demo.entity.Product">
+        SELECT product_id,product_title,price,description,img_url,sales
+        FROM product
+        WHERE
+            product_id = #{productId}
+    </select>
+
+    <insert id="insertProduct" useGeneratedKeys="true" keyProperty="productId"
+            keyColumn="productId" parameterType="com.example.demo.entity.Product">
+        INSERT INTO
+            product(product_title,price,description,img_url,sales)
+        VALUES
+        (#{productTitle},#{price},#{description},#{imgUrl},#{sales})
+    </insert>
+
+    <update id="updateProduct" parameterType="com.example.demo.entity.Product">
+        update product
+        <set>
+            <if test="productTitle != null">product_title=#{productTitle},</if>
+            <if test="price != null">price=#{price},</if>
+            <if test="description != null">description=#{description},</if>
+            <if test="imgUrl != null">img_url=#{imgUrl},</if>
+            <if test="sales != null">sales=#{sales}</if>
+        </set>
+        where
+        product_id = #{productId}
+    </update>
+
+    <delete id="deleteProduct">
+        DELETE FROM
+            product
+        WHERE
+            product_id = #{productId}
+    </delete>
+
+</mapper>
