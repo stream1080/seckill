@@ -107,11 +107,9 @@ public class ProductServiceImpl implements ProductService {
             List<Product> productList = getProductList();
             String s = gson.toJson(productList);
             redisTemplate.opsForValue().set("productJson", s);
-            System.out.println("查数据库");
             return productList;
         }
         List<Product> result = gson.fromJson(productJson, new TypeToken<List<Product>>(){}.getType());
-        System.out.println("查缓存");
         return result;
     }
 
@@ -123,11 +121,9 @@ public class ProductServiceImpl implements ProductService {
             Product product = getProductById(productId);
             String s = gson.toJson(product);
             redisTemplate.opsForValue().set(String.valueOf(productId), s);
-            System.out.println("查数据库");
             return product;
         }
         Product result = gson.fromJson(productCache, Product.class);
-        System.out.println("查缓存");
         return result;
     }
 }
