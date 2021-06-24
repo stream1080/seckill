@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.demo.vo.LoginVO;
+import com.example.demo.vo.RespBean;
 
 /**
  * <p>
@@ -12,5 +14,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-06-24
  */
 public interface UserService extends IService<User> {
+
+    /**
+     * 登录功能
+     * @param loginVO
+     * @param request
+     * @param response
+     * @return
+     */
+    RespBean doLogin(LoginVO loginVO);
 
 }

@@ -55,6 +55,11 @@
             <artifactId>velocity-engine-core</artifactId>
             <version>2.0</version>
         </dependency>
+<!--        thymeleaf模板引擎-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
 
         <!-- 添加swagger2相关功能 -->
         <dependency>
@@ -95,6 +100,12 @@
 <!--            <artifactId>junit</artifactId>-->
 <!--            <scope>test</scope>-->
 <!--        </dependency>-->
+
+<!--        validation参数校验组件-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
 
 
         <dependency>
