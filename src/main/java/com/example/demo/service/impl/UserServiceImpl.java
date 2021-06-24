@@ -6,6 +6,7 @@ import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.utils.MD5Util;
+import com.example.demo.utils.UUIDUtil;
 import com.example.demo.utils.ValidatorUtil;
 import com.example.demo.vo.LoginVO;
 import com.example.demo.vo.RespBean;
@@ -13,6 +14,9 @@ import com.example.demo.vo.RespBeanEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>
@@ -35,7 +39,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return
      */
     @Override
-    public RespBean doLogin(LoginVO loginVO) {
+    public RespBean doLogin(LoginVO loginVO, HttpServletRequest request, HttpServletResponse response) {
         String mobile = loginVO.getMobile();
         String password = loginVO.getPassword();
 //        if(StringUtils.isEmpty(mobile)||StringUtils.isEmpty(password)){
@@ -53,8 +57,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new GlobalException(RespBeanEnum.LOGIN_ERROR);
         }
 //        //生成Cookie
-//        String ticket = UUIDUtil.uuid();
-//        request.getSession().setAttribute(ticket, user);
+        String ticket = UUIDUtil.uuid();
+        request.getSession().setAttribute(ticket,user);
 //        //将用户信息存入redis中
 //        CookieUtil.setCookie(request, response, "userTicket", ticket);
 //        return RespBean.success(ticket);

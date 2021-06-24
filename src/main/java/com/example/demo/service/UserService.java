@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.demo.vo.LoginVO;
 import com.example.demo.vo.RespBean;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * <p>
  * 秒杀-秒杀用户 服务类
@@ -22,6 +25,6 @@ public interface UserService extends IService<User> {
      * @param response
      * @return
      */
-    RespBean doLogin(LoginVO loginVO);
+    RespBean doLogin(LoginVO loginVO, HttpServletRequest request, HttpServletResponse response);
 
 }
