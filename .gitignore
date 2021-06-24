@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+
+
+**/.mvn
+**/mvnw.cmd
+**/mvnw
+**/target/
+**/.gitignore
+.idea
