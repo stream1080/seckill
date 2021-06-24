@@ -19,10 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Title: UserArgumentResolver
  * Description: 自定义用户参数
- *
- * @author sqn
- * @version 1.0.0
- * @date 2021/4/15 0015 下午 2:19
  */
 @Component
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
