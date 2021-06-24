@@ -5,6 +5,7 @@ import com.example.demo.exception.GlobalException;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.demo.utils.CookieUtil;
 import com.example.demo.utils.MD5Util;
 import com.example.demo.utils.UUIDUtil;
 import com.example.demo.utils.ValidatorUtil;
@@ -13,6 +14,7 @@ import com.example.demo.vo.RespBean;
 import com.example.demo.vo.RespBeanEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +34,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 登录功能
@@ -60,8 +65,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String ticket = UUIDUtil.uuid();
         request.getSession().setAttribute(ticket,user);
 //        //将用户信息存入redis中
-//        CookieUtil.setCookie(request, response, "userTicket", ticket);
+        redisTemplate.opsForValue().set("user"+ticket,user);
+        CookieUtil.setCookie(request, response, "userTicket", ticket);
 //        return RespBean.success(ticket);
         return RespBean.success();
+    }
+
+    @Override
+    public User getUserByCookie(String userTicket, HttpServletRequest request, HttpServletResponse response) {
+        if (StringUtils.isEmpty(userTicket)) {
+            return null;
+        }
+        User user = (User) redisTemplate.opsForValue().get("user" + userTicket);
+        if (user != null) {
+            CookieUtil.setCookie(request,response,"userTicket",userTicket);
+        }
+        return user;
     }
 }
