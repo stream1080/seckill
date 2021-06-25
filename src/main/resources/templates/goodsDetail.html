@@ -32,24 +32,24 @@
         </tr>
         <tr>
             <td>秒杀开始时间</td>
-<!--            <td th:text="${#dates.format(goods.startDate,'yyyy-MM-dd HH:mm:ss')}"></td>-->
-<!--            <td id="seckillTip">-->
-<!--                <input type="hidden" id="remainSeconds" th:value="${remainSeconds}">-->
-<!--                <span th:if="${secKillStatus eq 0}">秒杀开始倒计时：<span id="countDown"-->
-<!--                                                                  th:text="${remainSeconds}"></span>秒</span>-->
-<!--                <span th:if="${secKillStatus eq 1}">秒杀进行中</span>-->
-<!--                <span th:if="${secKillStatus eq 2}">秒杀已结束</span>-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td>秒杀结束时间</td>-->
-<!--            <td th:text="${#dates.format(goods.endDate,'yyyy-MM-dd HH:mm:ss')}"></td>-->
-<!--            <td id="seckillTipEnd">-->
-<!--                <input type="hidden" id="endSeconds" th:value="${endSeconds}">-->
-<!--                <span>秒杀结束倒计时：<span id="countDownEnd"-->
-<!--                                    th:text="${endSeconds}"></span>秒</span>-->
-<!--                <span th:if="${secKillStatus eq 2}">秒杀已结束</span>-->
-<!--            </td>-->
+            <td th:text="${#dates.format(goods.startDate,'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td id="seckillTip">
+                <input type="hidden" id="remainSeconds" th:value="${remainSeconds}">
+                <span th:if="${secKillStatus eq 0}">秒杀开始倒计时：<span id="countDown"
+                                                                  th:text="${remainSeconds}"></span>秒</span>
+                <span th:if="${secKillStatus eq 1}">秒杀进行中</span>
+                <span th:if="${secKillStatus eq 2}">秒杀已结束</span>
+            </td>
+        </tr>
+        <tr>
+            <td>秒杀结束时间</td>
+            <td th:text="${#dates.format(goods.endDate,'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td id="seckillTipEnd">
+                <input type="hidden" id="endSeconds" th:value="${endSeconds}">
+                <span>秒杀结束倒计时：<span id="countDownEnd"
+                                    th:text="${endSeconds}"></span>秒</span>
+                <span th:if="${secKillStatus eq 2}">秒杀已结束</span>
+            </td>
         </tr>
         <tr>
             <td>商品原价</td>
@@ -75,56 +75,56 @@
 </div>
 </body>
 <script>
-    // $(function () {
-    //     countDown();
-    //     countDownEnd();
-    // });
-    //
-    // //秒杀开始倒计时
-    // function countDown() {
-    //     var remainSeconds = $("#remainSeconds").val();
-    //     var timeout;
-    //     if (remainSeconds > 0) {
-    //         $("#buyButton").attr("disabled",true);
-    //         timeout = setTimeout(function () {
-    //             $("#countDown").text(remainSeconds - 1);
-    //             $("#remainSeconds").val(remainSeconds - 1);
-    //             countDown();
-    //         }, 1000);
-    //     } else if (remainSeconds == 0) {
-    //         $("#buyButton").attr("disabled",false);
-    //         if (timeout) {
-    //             clearTimeout(timeout);
-    //         }
-    //         $("#seckillTip").html("秒杀进行中");
-    //     } else {
-    //         $("#buyButton").attr("disabled",true);
-    //         $("#seckillTip").html("秒杀已结束");
-    //     }
-    // };
-    //
-    // //秒杀结束倒计时
-    // function countDownEnd() {
-    //     var endSeconds = $("#endSeconds").val();
-    //     var timeoutEnd;
-    //     if (endSeconds > 0) {
-    //         timeoutEnd = setTimeout(function () {
-    //             $("#countDownEnd").text(endSeconds - 1);
-    //             $("#endSeconds").val(endSeconds - 1);
-    //             countDownEnd();
-    //         }, 1000);
-    //     } else if (endSeconds == 0) {
-    //         if (timeoutEnd) {
-    //             clearTimeout(timeoutEnd);
-    //         }
-    //         $("#seckillTipEnd").html("秒杀已结束");
-    //         $("#seckillTip").html("秒杀已结束");
-    //         $("#buyButton").attr("disabled",true);
-    //     } else {
-    //         $("#seckillTipEnd").html("秒杀已结束");
-    //         $("#buyButton").attr("disabled",true);
-    //     }
-    // };
+    $(function () {
+        countDown();
+        countDownEnd();
+    });
+
+    //秒杀开始倒计时
+    function countDown() {
+        var remainSeconds = $("#remainSeconds").val();
+        var timeout;
+        if (remainSeconds > 0) {
+            $("#buyButton").attr("disabled",true);
+            timeout = setTimeout(function () {
+                $("#countDown").text(remainSeconds - 1);
+                $("#remainSeconds").val(remainSeconds - 1);
+                countDown();
+            }, 1000);
+        } else if (remainSeconds == 0) {
+            $("#buyButton").attr("disabled",false);
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+            $("#seckillTip").html("秒杀进行中");
+        } else {
+            $("#buyButton").attr("disabled",true);
+            $("#seckillTip").html("秒杀已结束");
+        }
+    };
+
+    //秒杀结束倒计时
+    function countDownEnd() {
+        var endSeconds = $("#endSeconds").val();
+        var timeoutEnd;
+        if (endSeconds > 0) {
+            timeoutEnd = setTimeout(function () {
+                $("#countDownEnd").text(endSeconds - 1);
+                $("#endSeconds").val(endSeconds - 1);
+                countDownEnd();
+            }, 1000);
+        } else if (endSeconds == 0) {
+            if (timeoutEnd) {
+                clearTimeout(timeoutEnd);
+            }
+            $("#seckillTipEnd").html("秒杀已结束");
+            $("#seckillTip").html("秒杀已结束");
+            $("#buyButton").attr("disabled",true);
+        } else {
+            $("#seckillTipEnd").html("秒杀已结束");
+            $("#buyButton").attr("disabled",true);
+        }
+    };
 
 </script>
 </html>
