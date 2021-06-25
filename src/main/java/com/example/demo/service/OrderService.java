@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Order;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.demo.entity.User;
+import com.example.demo.vo.GoodsVo;
 
 /**
  * <p>
@@ -13,4 +15,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface OrderService extends IService<Order> {
 
+    /**
+     * 秒杀
+     * @param user
+     * @param goods
+     * @return
+     */
+    Order seckill(User user, GoodsVo goods);
 }
