@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 
 import com.example.demo.service.UserService;
-import com.example.demo.vo.LoginVO;
+import com.example.demo.vo.LoginVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,22 +42,22 @@ public class LoginUserController {
     /**
      * 登录功能
      *
-     * @param loginVO
+     * @param loginVo
      * @param request
      * @param response
      * @return
      */
 //    @RequestMapping("/doLogin")
 //    @ResponseBody
-//    public Object doLogin(@Valid LoginVO loginVO, HttpServletRequest request, HttpServletResponse response) {
-//        return userService.doLogin(loginVO, request, response);
+//    public Object doLogin(@Valid LoginVO loginVo, HttpServletRequest request, HttpServletResponse response) {
+//        return userService.doLogin(loginVo, request, response);
 //    }
 
     @RequestMapping("/doLogin")
     @ResponseBody
-    public Object doLogin(@Valid LoginVO loginVO, HttpServletRequest request, HttpServletResponse response) {
-        log.info("login={}"+loginVO);
-        return userService.doLogin(loginVO,request,response);
+    public Object doLogin(@Valid LoginVo loginVo, HttpServletRequest request, HttpServletResponse response) {
+        log.info("login={}"+loginVo);
+        return userService.doLogin(loginVo,request,response);
     }
 
 }

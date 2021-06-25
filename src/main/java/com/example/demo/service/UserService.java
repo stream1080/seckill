@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.demo.vo.LoginVO;
+import com.example.demo.vo.LoginVo;
 import com.example.demo.vo.RespBean;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,12 +21,12 @@ public interface UserService extends IService<User> {
     /**
      * 登录功能
      *
-     * @param loginVO
+     * @param loginVo
      * @param request
      * @param response
      * @return
      */
-    RespBean doLogin(LoginVO loginVO, HttpServletRequest request, HttpServletResponse response);
+    RespBean doLogin(LoginVo loginVo, HttpServletRequest request, HttpServletResponse response);
 
     /**
      * 根据cookie获取用户

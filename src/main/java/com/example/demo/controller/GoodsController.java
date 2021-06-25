@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 
 import com.example.demo.entity.User;
+import com.example.demo.service.GoodsService;
 import com.example.demo.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +35,9 @@ public class GoodsController {
     private UserService userService;
 
     @Autowired
+    private GoodsService goodsService;
+
+    @Autowired
     private RedisTemplate redisTemplate;
 
     @RequestMapping("/toList")
@@ -46,7 +51,15 @@ public class GoodsController {
 //            return "login";
 //        }
         model.addAttribute("user",user);
+        model.addAttribute("goodsList",goodsService.findGoodsVo());
         return "goodsList";
+    }
+
+    @RequestMapping("/detail/{goodId}")
+    public String toDetail(Model model, User user, @PathVariable long goodId){
+        model.addAttribute("user",user);
+        model.addAttribute("goods",goodsService.findGoodsVoById(goodId));
+        return "goodsDetail";
     }
 
 }

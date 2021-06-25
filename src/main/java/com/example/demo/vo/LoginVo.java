@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
  *
  */
 @Data
-public class LoginVO {
+public class LoginVo {
 
     @NotNull
     @IsMobile

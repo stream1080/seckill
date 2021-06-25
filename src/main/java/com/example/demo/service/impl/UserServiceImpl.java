@@ -8,8 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.utils.CookieUtil;
 import com.example.demo.utils.MD5Util;
 import com.example.demo.utils.UUIDUtil;
-import com.example.demo.utils.ValidatorUtil;
-import com.example.demo.vo.LoginVO;
+import com.example.demo.vo.LoginVo;
 import com.example.demo.vo.RespBean;
 import com.example.demo.vo.RespBeanEnum;
 import org.apache.commons.lang3.StringUtils;
@@ -40,13 +39,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     /**
      * 登录功能
-     * @param loginVO
+     * @param loginVo
      * @return
      */
     @Override
-    public RespBean doLogin(LoginVO loginVO, HttpServletRequest request, HttpServletResponse response) {
-        String mobile = loginVO.getMobile();
-        String password = loginVO.getPassword();
+    public RespBean doLogin(LoginVo loginVo, HttpServletRequest request, HttpServletResponse response) {
+        String mobile = loginVo.getMobile();
+        String password = loginVo.getPassword();
 //        if(StringUtils.isEmpty(mobile)||StringUtils.isEmpty(password)){
 //            return RespBean.error(RespBeanEnum.LOGIN_ERROR);
 //        }
