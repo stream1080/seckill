@@ -42,11 +42,11 @@
         </tr>
         <tr>
             <td>收货人</td>
-            <td colspan="2" id="nickname">xxx 130xxxxxxxx</td>
+            <td colspan="2" id="nickname">张三 13000000000</td>
         </tr>
         <tr>
             <td>收货地址</td>
-            <td colspan="2" id="deliveryAddrId">上海市浦东区世纪大道xxx</td>
+            <td colspan="2" id="deliveryAddrId">上海市浦东区世纪大道130号</td>
         </tr>
         <tr>
             <td>
@@ -87,7 +87,7 @@
     //ajax返回值渲染页面
     function render(detail) {
         var order = detail.order;
-        var goods = detail.goodsVO;
+        var goods = detail.goodsVo;
 
         $("#goodsName").text(goods.goodsName);
         $("#goodsImg").attr("src", goods.goodsImg);

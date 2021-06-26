@@ -1,16 +1,17 @@
 package com.example.demo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.demo.entity.Order;
-import com.example.demo.entity.SeckillGoods;
-import com.example.demo.entity.SeckillOrder;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
+import com.example.demo.exception.GlobalException;
 import com.example.demo.mapper.OrderMapper;
+import com.example.demo.service.GoodsService;
 import com.example.demo.service.OrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.service.SeckillGoodsService;
 import com.example.demo.service.SeckillOrderService;
 import com.example.demo.vo.GoodsVo;
+import com.example.demo.vo.OrderDetailVo;
+import com.example.demo.vo.RespBeanEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +29,14 @@ import java.util.Date;
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
 
+    @Autowired
+    private GoodsService goodsService;
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private OrderMapper orderMapper;
 
     @Autowired
     private SeckillOrderService seckillOrderService;
@@ -73,5 +79,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         seckillOrderService.save(seckillOrder);
 
         return order;
+    }
+
+    @Override
+    public OrderDetailVo detail(Long orderId) {
+        if (orderId == null) {
+            throw new GlobalException(RespBeanEnum.ORDER_NOT_EXIST);
+        }
+        Order order = orderMapper.selectById(orderId);
+        GoodsVo goodsVo = goodsService.findGoodsVoById(order.getGoodsId());
+        OrderDetailVo detail = new OrderDetailVo();
+        detail.setOrder(order);
+        detail.setGoodsVo(goodsVo);
+        return detail;
     }
 }
