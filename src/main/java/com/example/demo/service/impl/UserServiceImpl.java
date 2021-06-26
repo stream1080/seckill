@@ -67,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         redisTemplate.opsForValue().set("user"+ticket,user);
         CookieUtil.setCookie(request, response, "userTicket", ticket);
 //        return RespBean.success(ticket);
-        return RespBean.success();
+        return RespBean.success(ticket);
     }
 
     @Override

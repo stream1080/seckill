@@ -11,7 +11,9 @@ import com.example.demo.service.SeckillOrderService;
 import com.example.demo.vo.GoodsVo;
 import com.example.demo.vo.RespBean;
 import com.example.demo.vo.RespBeanEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author stream
  * @since 2021-06-24
  */
+@Slf4j
 @Controller
 @RequestMapping("/seckill")
 public class SecKillController {
@@ -40,12 +43,16 @@ public class SecKillController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
 
     @RequestMapping(value = "/doSeckill", method = RequestMethod.POST)
     @ResponseBody
     public RespBean doSecKill(User user, Long goodsId) {
         //判断用户是否登录
         if (user == null) {
+            log.info("user={}",user);
             return RespBean.error(RespBeanEnum.SESSION_ERROR);
         }
         GoodsVo goods = goodsService.findGoodsVoById(goodsId);
@@ -81,7 +88,8 @@ public class SecKillController {
         }
 
         //判断是否重复抢购
-        SeckillOrder seckillOrder = seckillOrderService.getOne(new QueryWrapper<SeckillOrder>().eq("user_id", user.getId()).eq("goods_id", goodsId));
+//        SeckillOrder seckillOrder = seckillOrderService.getOne(new QueryWrapper<SeckillOrder>().eq("user_id", user.getId()).eq("goods_id", goodsId));
+        SeckillOrder seckillOrder = (SeckillOrder) redisTemplate.opsForValue().get("order:" + user.getId() + ":" + goodsId);
         if (seckillOrder != null) {
             model.addAttribute("errmsg", RespBeanEnum.REPEATE_ERROR.getMessage());
             return "secKillFail";

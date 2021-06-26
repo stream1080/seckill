@@ -1,16 +1,29 @@
 package com.example.demo;
 
+import com.example.demo.entity.Goods;
+import com.example.demo.mapper.GoodsMapper;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 
 @SpringBootTest
 class DemoApplicationTests {
 
+    @Autowired
+    private GoodsMapper goodsMapper;
+
 
     @Test
-    void contextLoads() {
+    void contextLoads() throws Exception {
+        RequestGoodsInfo RequestGoodsInfo = new RequestGoodsInfo();
+        List<Goods> goodsList = new RequestGoodsInfo.HtmlParseUtil().parseJD("java");
+        for (Goods goods:goodsList) {
+            goodsMapper.insert(goods);
+        }
     }
 
 }

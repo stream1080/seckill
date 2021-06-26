@@ -124,6 +124,13 @@
 <!--            <groupId>org.springframework.session</groupId>-->
 <!--            <artifactId>spring-session-data-redis</artifactId>-->
 <!--        </dependency>-->
+
+        <!--jsoup解析网页,  tika包爬电影，音乐-->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.13.1</version>
+        </dependency>
         
         <dependency>
             <groupId>org.projectlombok</groupId>
