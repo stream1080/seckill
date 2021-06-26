@@ -4,7 +4,9 @@ package com.example.demo.controller;
 import com.example.demo.entity.User;
 import com.example.demo.service.GoodsService;
 import com.example.demo.service.UserService;
+import com.example.demo.vo.GoodsDetailVo;
 import com.example.demo.vo.GoodsVo;
+import com.example.demo.vo.RespBean;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,9 @@ public class GoodsController {
 
     /**
      * 跳转到商品列表页面 （页面缓存，存入Redis）
-     *
+     *     1000*5 QPS:1937
+     *     2000*5 QPS:2206
+     *     5000*5 QPS:1876
      * @param model
      * @param user
      * @param request
@@ -79,6 +83,117 @@ public class GoodsController {
 
 
     /**
+     * 到商品详情页面 （页面缓存 存入Redis）
+     *
+     * 页面静态化,前后端分离 ajax
+     *
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping("/detail/{goodsId}")
+    @ResponseBody
+    public RespBean detail(User user, @PathVariable Long goodsId) {
+        GoodsVo goodsVo = goodsService.findGoodsVoById(goodsId);
+
+        Date startDate = goodsVo.getStartDate();
+        Date endDate = goodsVo.getEndDate();
+        Date nowDate = new Date();
+
+        //秒杀状态
+        int secKillStatus = 0;
+        //秒杀倒计时
+        Long remainSeconds = 0L;
+        //秒杀结束倒计时
+        Long endSeconds = (endDate.getTime() - nowDate.getTime()) / 1000;
+        //秒杀还未开始
+        if (nowDate.before(startDate)) {
+            remainSeconds = (startDate.getTime() - nowDate.getTime()) / 1000;
+        } else if (nowDate.after(endDate)) {
+            //秒杀已结束
+            secKillStatus = 2;
+            remainSeconds = -1L;
+            endSeconds = 0L;
+        } else {
+            //秒杀进行中
+            secKillStatus = 1;
+            remainSeconds = 0L;
+        }
+
+        GoodsDetailVo goodsDetailVO = new GoodsDetailVo();
+        goodsDetailVO.setUser(user);
+        goodsDetailVO.setGoodsVo(goodsVo);
+        goodsDetailVO.setSecKillStatus(secKillStatus);
+        goodsDetailVO.setRemainSeconds(remainSeconds);
+        goodsDetailVO.setEndSeconds(endSeconds);
+
+        return RespBean.success(goodsDetailVO);
+    }
+
+
+
+
+
+
+    /**
+     * 商品列表，未使用缓存：
+     *            1000*5 QPS:482
+     *            2000*5 QPS:572
+     *            5000*5 QPS:401
+     * @param model
+     * @param user
+     * @return
+     */
+//    @RequestMapping("/toList")
+//    public String toList(Model model, User user){
+////        if(StringUtils.isEmpty(ticket)){
+////            return "login";
+////        }
+////        User user = userService.getUserByCookie(ticket,request,response);
+//////        User user = (User) session.getAttribute(ticket);
+////        if (null == user){
+////            return "login";
+////        }
+//        model.addAttribute("user",user);
+//        model.addAttribute("goodsList",goodsService.findGoodsVo());
+//        return "goodsList";
+//    }
+//
+//    @RequestMapping("/detail/{goodId}")
+//    public String toDetail(Model model, User user, @PathVariable long goodId){
+//        model.addAttribute("user",user);
+//        GoodsVo goodsVo = goodsService.findGoodsVoById(goodId);
+//        Date startDate = goodsVo.getStartDate();
+//        Date endDate = goodsVo.getEndDate();
+//        Date nowDate = new Date();
+//
+//        //秒杀状态
+//        int secKillStatus = 0;
+//        //秒杀倒计时
+//        int remainSeconds = 0;
+//        //秒杀结束倒计时
+//        int endSeconds = (int) ((endDate.getTime() - nowDate.getTime()) / 1000);
+//        //秒杀还未开始
+//        if (nowDate.before(startDate)) {
+//            remainSeconds = (int) ((startDate.getTime() - nowDate.getTime()) / 1000);
+//        } else if (nowDate.after(endDate)) {
+//            //秒杀已结束
+//            secKillStatus = 2;
+//            remainSeconds = -1;
+//            endSeconds = 0;
+//        } else {
+//            //秒杀进行中
+//            secKillStatus = 1;
+//            remainSeconds = 0;
+//        }
+//        model.addAttribute("secKillStatus", secKillStatus);
+//        model.addAttribute("remainSeconds", remainSeconds);
+//        model.addAttribute("endSeconds", endSeconds);
+//        model.addAttribute("goods",goodsVo);
+//        return "goodsDetail";
+//    }
+
+    /**
      * 跳转到商品详情页面 （页面缓存 存入Redis）
      *
      * @param model
@@ -88,9 +203,9 @@ public class GoodsController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/detail/{goodsId}", produces = "text/html;charset=utf-8")
+    @RequestMapping(value = "/detail2/{goodsId}", produces = "text/html;charset=utf-8")
     @ResponseBody
-    public String toDetail(Model model, User user, @PathVariable Long goodsId, HttpServletRequest request, HttpServletResponse response) {
+    public String toDetail2(Model model, User user, @PathVariable Long goodsId, HttpServletRequest request, HttpServletResponse response) {
         // Redis中获取页面，如果不为空，直接返回页面
         ValueOperations valueOperations = redisTemplate.opsForValue();
         String html = (String) valueOperations.get("goodsDetail" + goodsId);
@@ -137,55 +252,6 @@ public class GoodsController {
         return html;
     }
 
-
-//    @RequestMapping("/toList")
-//    public String toList(Model model, User user){
-////        if(StringUtils.isEmpty(ticket)){
-////            return "login";
-////        }
-////        User user = userService.getUserByCookie(ticket,request,response);
-//////        User user = (User) session.getAttribute(ticket);
-////        if (null == user){
-////            return "login";
-////        }
-//        model.addAttribute("user",user);
-//        model.addAttribute("goodsList",goodsService.findGoodsVo());
-//        return "goodsList";
-//    }
-
-//    @RequestMapping("/detail/{goodId}")
-//    public String toDetail(Model model, User user, @PathVariable long goodId){
-//        model.addAttribute("user",user);
-//        GoodsVo goodsVo = goodsService.findGoodsVoById(goodId);
-//        Date startDate = goodsVo.getStartDate();
-//        Date endDate = goodsVo.getEndDate();
-//        Date nowDate = new Date();
-//
-//        //秒杀状态
-//        int secKillStatus = 0;
-//        //秒杀倒计时
-//        int remainSeconds = 0;
-//        //秒杀结束倒计时
-//        int endSeconds = (int) ((endDate.getTime() - nowDate.getTime()) / 1000);
-//        //秒杀还未开始
-//        if (nowDate.before(startDate)) {
-//            remainSeconds = (int) ((startDate.getTime() - nowDate.getTime()) / 1000);
-//        } else if (nowDate.after(endDate)) {
-//            //秒杀已结束
-//            secKillStatus = 2;
-//            remainSeconds = -1;
-//            endSeconds = 0;
-//        } else {
-//            //秒杀进行中
-//            secKillStatus = 1;
-//            remainSeconds = 0;
-//        }
-//        model.addAttribute("secKillStatus", secKillStatus);
-//        model.addAttribute("remainSeconds", remainSeconds);
-//        model.addAttribute("endSeconds", endSeconds);
-//        model.addAttribute("goods",goodsVo);
-//        return "goodsDetail";
-//    }
 
 }
 

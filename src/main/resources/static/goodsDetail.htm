@@ -65,7 +65,8 @@
                         <img id="verifyCodeImg" width="80" height="32" style="display: none"
                              onclick="refreshVerifyCodeImg()"/>
                         <input id="verifyCode" class="form-control" style="display: none"/>
-                        <button class="btn btn-primary" type="button" id="buyButton" onclick="getSeckillPath()">
+                        <button class="btn btn-primary" type="button" id="buyButton" onclick="doSeckill()">
+<!--                        <button class="btn btn-primary" type="button" id="buyButton" onclick="getSeckillPath()">-->
                             立即秒杀
                         </button>
                     </div>
@@ -106,7 +107,7 @@
     //ajax返回值渲染页面
     function render(detail) {
         var user = detail.user;
-        var goods = detail.goodsVO;
+        var goods = detail.goodsVo;
         var remainSeconds = detail.remainSeconds;
         var endSeconds = detail.endSeconds;
 
@@ -183,15 +184,16 @@
     //秒杀
     function doSeckill(path) {
         $.ajax({
-            url: "/seckill/" + path + "/doSeckill",
+            // url: "/seckill/" + path + "/doSeckill",
+            url: "/seckill/doSeckill",
             type: "POST",
             data: {
                 goodsId: $("#goodsId").val()
             },
             success: function (data) {
                 if (data.code == 200) {
-                    // window.location.href = "/orderDetail.htm?orderId=" + data.obj.id;
-                    getSecKillResult($("#goodsId").val());
+                    window.location.href = "/orderDetail.htm?orderId=" + data.obj.id;
+                    // getSecKillResult($("#goodsId").val());
                 } else {
                     layer.msg(data.code + ":" + data.message);
                 }
@@ -245,7 +247,8 @@
         var goodsId = $("#goodsId").val();
         g_showLoading();
         $.ajax({
-            url: "/seckill/path",
+            // url: "/seckill/path",
+            url: "/seckill/doSeckill",
             type: "GET",
             data: {
                 goodsId: goodsId,
