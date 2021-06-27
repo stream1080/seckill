@@ -10,10 +10,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Title: RabbitmqTopicConfig
  * Description:
- *
- * @author sqn
- * @version 1.0.0
- * @date 2021/4/21 0021 下午 12:52
  */
 @Configuration
 public class RabbitmqTopicConfig {
@@ -30,7 +26,9 @@ public class RabbitmqTopicConfig {
     private static final String TOPIC_EXCHANGE = "topicExchange";
 
     /**
-     * 路由键 routingkey #表示0或多个单词，*表示一个单词
+     * 路由键 routingkey
+     * #表示匹配0或多个单词
+     * *表示匹配一个单词
      */
     private static final String ROUTINGKEY_01 = "#.queue.#";
     private static final String ROUTINGKEY_02 = "*.queue.#";

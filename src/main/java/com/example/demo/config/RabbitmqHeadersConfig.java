@@ -13,10 +13,6 @@ import java.util.Map;
 /**
  * Title: RabbitmqHeadersConfig
  * Description:
- *
- * @author sqn
- * @version 1.0.0
- * @date 2021/4/21 0021 下午 12:52
  */
 @Configuration
 public class RabbitmqHeadersConfig {

@@ -28,7 +28,10 @@ class DemoApplicationTests {
     @Test
     void mqTestFanout(){
 //        mqSender.sendDirectRed("Hello-Red");
-        mqSender.sendDirectGreen("Hello-greed");
+//        mqSender.sendDirectGreen("Hello-greed");
+
+        mqSender.sendTopic01("Hello-Red");
+        mqSender.sendTopic02("Hello-greed");
     }
 
 
