@@ -80,32 +80,32 @@ public class MqSender {
         rabbitTemplate.convertAndSend("topicExchange", "message.queue.green.abc", msg);
     }
 
-//    /**
-//     * headers模式
-//     *
-//     * @param msg
-//     */
-//    public void sendHeaders01(String msg) {
-//        log.info("发送Headers消息：" + msg);
-//        MessageProperties properties = new MessageProperties();
-//        properties.setHeader("color", "red");
-//        properties.setHeader("speed", "fast");
-//        Message message = new Message(msg.getBytes(), properties);
-//        rabbitTemplate.convertAndSend("headersExchange", "", message);
-//    }
-//
-//    /**
-//     * headers模式
-//     *
-//     * @param msg
-//     */
-//    public void sendHeaders02(String msg) {
-//        log.info("发送Headers消息：" + msg);
-//        MessageProperties properties = new MessageProperties();
-//        properties.setHeader("color", "red");
-//        properties.setHeader("speed", "normal");
-//        Message message = new Message(msg.getBytes(), properties);
-//        rabbitTemplate.convertAndSend("headersExchange", "", message);
-//    }
+    /**
+     * headers模式
+     *
+     * @param msg
+     */
+    public void sendHeaders01(String msg) {
+        log.info("发送Headers消息：" + msg);
+        MessageProperties properties = new MessageProperties();
+        properties.setHeader("color", "red");
+        properties.setHeader("speed", "fast");
+        Message message = new Message(msg.getBytes(), properties);
+        rabbitTemplate.convertAndSend("headersExchange", "", message);
+    }
+
+    /**
+     * headers模式
+     *
+     * @param msg
+     */
+    public void sendHeaders02(String msg) {
+        log.info("发送Headers消息：" + msg);
+        MessageProperties properties = new MessageProperties();
+        properties.setHeader("color", "red");
+        properties.setHeader("speed", "normal");
+        Message message = new Message(msg.getBytes(), properties);
+        rabbitTemplate.convertAndSend("headersExchange", "", message);
+    }
 
 }

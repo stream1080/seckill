@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * Title: RabbitmqHeadersConfig
- * Description:
+ * Description: Headers模式不常用
  */
 @Configuration
 public class RabbitmqHeadersConfig {
@@ -43,6 +43,10 @@ public class RabbitmqHeadersConfig {
         return new HeadersExchange(HEADERS_EXCHANGE);
     }
 
+    /**
+     * 只需匹配一个
+     * @return
+     */
     @Bean
     public Binding bindingHeaders01() {
         Map<String, Object> map = new HashMap<>(16);
@@ -51,6 +55,10 @@ public class RabbitmqHeadersConfig {
         return BindingBuilder.bind(queueHeaders01()).to(headersExchange()).whereAny(map).match();
     }
 
+    /**
+     * 整个Map同时匹配
+     * @return
+     */
     @Bean
     public Binding bindingHeaders02() {
         Map<String, Object> map = new HashMap<>(16);

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Title: RabbitmqTopicConfig
- * Description:
+ * Description: Topic模式常用
  */
 @Configuration
 public class RabbitmqTopicConfig {

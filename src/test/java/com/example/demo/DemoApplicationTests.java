@@ -30,8 +30,11 @@ class DemoApplicationTests {
 //        mqSender.sendDirectRed("Hello-Red");
 //        mqSender.sendDirectGreen("Hello-greed");
 
-        mqSender.sendTopic01("Hello-Red");
-        mqSender.sendTopic02("Hello-greed");
+//        mqSender.sendTopic01("Hello-Red");
+//        mqSender.sendTopic02("Hello-greed");
+
+        mqSender.sendHeaders01("Hello-Header-01");
+        mqSender.sendHeaders02("Hello-Header-02");
     }
 
 
