@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.entity.Goods;
 import com.example.demo.mapper.GoodsMapper;
+import com.example.demo.rabbitmq.MqSender;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,21 @@ class DemoApplicationTests {
 
     @Autowired
     private GoodsMapper goodsMapper;
+
+    @Autowired
+    private MqSender mqSender;
+
+    @Test
+    void mqTest(){
+        mqSender.send("Hello");
+    }
+
+    @Test
+    void mqTestFanout(){
+//        mqSender.sendDirectRed("Hello-Red");
+        mqSender.sendDirectGreen("Hello-greed");
+    }
+
 
 
     @Test
