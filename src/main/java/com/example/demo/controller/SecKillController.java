@@ -20,6 +20,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +64,9 @@ public class SecKillController implements InitializingBean {
 
     @Autowired
     private SecKillRabbitmqSender secKillRabbitmqSender;
+
+    @Autowired
+    private RedisScript<Long> redisScript;
 
     private Gson gson = new Gson();
 
@@ -98,8 +103,13 @@ public class SecKillController implements InitializingBean {
             return RespBean.error(RespBeanEnum.EMPTY_STOCK);
         }
 
-        //预减库存
-        Long stock = valueOperations.decrement("seckillGoods:"+goodsId);
+        //预减库存-redis原子操作
+        //Long stock = valueOperations.decrement("seckillGoods:"+goodsId);
+
+        //预减库存-redis分布式锁+lua脚本
+        Long stock = (Long) redisTemplate.execute(redisScript,Collections.singletonList("seckillGoods:" + goodsId),
+                Collections.EMPTY_LIST);
+
         if (stock<0){
             emptyStockMap.put(goodsId,true);
             valueOperations.increment("seckillGoods:"+goodsId);

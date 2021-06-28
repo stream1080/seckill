@@ -45,7 +45,7 @@ public class SecKillRabbitmqReceiver {
     public void receiverSeckillMessage(String msg) {
 //        SeckillMessage seckillMessage = JSON.parseObject(msg, SeckillMessage.class);
         SeckillMessage seckillMessage = gson.fromJson(msg,SeckillMessage.class);
-        log.info(SeckillRabbitmqConfig.SECKILL_QUEUE + "接收消息：" + seckillMessage);
+        log.info(SeckillRabbitmqConfig.SECKILL_QUEUE + "接收seckill消息：" + seckillMessage);
         User user = seckillMessage.getUser();
         Long goodsId = seckillMessage.getGoodsId();
 
