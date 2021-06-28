@@ -192,8 +192,8 @@
             },
             success: function (data) {
                 if (data.code == 200) {
-                    window.location.href = "/orderDetail.htm?orderId=" + data.obj.id;
-                    // getSecKillResult($("#goodsId").val());
+                    // window.location.href = "/orderDetail.htm?orderId=" + data.obj.id;
+                    getSecKillResult($("#goodsId").val());
                 } else {
                     layer.msg(data.code + ":" + data.message);
                 }

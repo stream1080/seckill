@@ -16,6 +16,7 @@ import com.example.demo.vo.OrderDetailVo;
 import com.example.demo.vo.RespBeanEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -152,13 +153,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Order seckill(User user, GoodsVo goods) {
+        ValueOperations valueOperations = redisTemplate.opsForValue();
         //秒杀商品表减库存
         SeckillGoods seckillGoods = seckillGoodsService.getOne(new QueryWrapper<SeckillGoods>().eq("goods_id", goods.getId()));
         seckillGoods.setStockCount(seckillGoods.getStockCount() - 1);
         boolean result = seckillGoodsService.update(seckillGoods,new UpdateWrapper<SeckillGoods>().setSql("stock_count=" + "stock_count-1").eq("goods_id", seckillGoods.getId()).gt("stock_count", 0));
-        if (!result  || seckillGoods.getStockCount()<1) {
+        if (seckillGoods.getStockCount()<1) {
             //减库存失败，商品卖完了
-//            setGoodsOver(goods.getId());
+            valueOperations.set("isStockEmpty:"+goods.getId(),"0");
             return null;
         }
 

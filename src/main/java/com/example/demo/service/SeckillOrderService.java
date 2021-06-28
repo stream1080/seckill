@@ -13,4 +13,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SeckillOrderService extends IService<SeckillOrder> {
 
+    /**
+     * 获取秒杀结果
+     *
+     * @param id
+     * @param goodsId
+     * @return
+     */
+    long getSeckillResult(Long id, Long goodsId);
 }

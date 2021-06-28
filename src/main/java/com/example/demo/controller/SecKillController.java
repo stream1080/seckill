@@ -9,6 +9,7 @@ import com.example.demo.rabbitmq.SecKillRabbitmqSender;
 import com.example.demo.rabbitmq.SeckillMessage;
 import com.example.demo.service.GoodsService;
 import com.example.demo.service.OrderService;
+import com.example.demo.service.SeckillGoodsService;
 import com.example.demo.service.SeckillOrderService;
 import com.example.demo.vo.GoodsVo;
 import com.example.demo.vo.RespBean;
@@ -48,6 +49,9 @@ public class SecKillController implements InitializingBean {
     private GoodsService goodsService;
 
     @Autowired
+    private SeckillGoodsService seckillGoodsService;
+
+    @Autowired
     private SeckillOrderService seckillOrderService;
 
     @Autowired
@@ -56,6 +60,7 @@ public class SecKillController implements InitializingBean {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
     private SecKillRabbitmqSender secKillRabbitmqSender;
 
     private Gson gson = new Gson();
@@ -80,8 +85,10 @@ public class SecKillController implements InitializingBean {
             return RespBean.error(RespBeanEnum.SESSION_ERROR);
         }
         ValueOperations valueOperations = redisTemplate.opsForValue();
+
         //判断是否重复抢购
-        SeckillOrder seckillOrder = (SeckillOrder) redisTemplate.opsForValue().get("order:" + user.getId() + ":" + goodsId);
+        SeckillOrder seckillOrder =
+                (SeckillOrder) redisTemplate.opsForValue().get("order:" + user.getId() + ":" + goodsId);
         if (seckillOrder != null) {
             return RespBean.error(RespBeanEnum.REPEATE_ERROR);
         }
@@ -101,6 +108,29 @@ public class SecKillController implements InitializingBean {
         SeckillMessage seckillMessage = new SeckillMessage(user,goodsId);
         secKillRabbitmqSender.sendSeckillMessage(seckillMessage);
         return RespBean.success(0);
+    }
+
+
+
+    /**
+     * 获取秒杀结果：
+     * orderId：成功
+     *      -1：秒杀失败
+     *       0：排队中
+     *
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/result", method = RequestMethod.GET)
+    @ResponseBody
+    public RespBean secKillResult(User user, Long goodsId) {
+        //判断用户是否登录
+        if (user == null) {
+            return RespBean.error(RespBeanEnum.SESSION_ERROR);
+        }
+        long result = seckillOrderService.getSeckillResult(user.getId(), goodsId);
+        return RespBean.success(result);
     }
 
 
@@ -169,10 +199,10 @@ public class SecKillController implements InitializingBean {
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
-        list.forEach(goodsVo -> {
-            redisTemplate.opsForValue().set("seckillGoods:"+goodsVo.getId(),
-                    goodsVo.getStockCount());
-            emptyStockMap.put(goodsVo.getId(), false);
+        list.forEach(GoodsVo -> {
+            redisTemplate.opsForValue().set("seckillGoods:"+GoodsVo.getId(),
+                    GoodsVo.getStockCount());
+            emptyStockMap.put(GoodsVo.getId(), false);
         });
     }
 }
