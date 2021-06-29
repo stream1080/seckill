@@ -11,6 +11,8 @@ import com.example.demo.service.OrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.service.SeckillGoodsService;
 import com.example.demo.service.SeckillOrderService;
+import com.example.demo.utils.MD5Util;
+import com.example.demo.utils.UUIDUtil;
 import com.example.demo.vo.GoodsVo;
 import com.example.demo.vo.OrderDetailVo;
 import com.example.demo.vo.RespBeanEnum;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -156,7 +159,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         ValueOperations valueOperations = redisTemplate.opsForValue();
         //秒杀商品表减库存
         SeckillGoods seckillGoods = seckillGoodsService.getOne(new QueryWrapper<SeckillGoods>().eq("goods_id", goods.getId()));
-        seckillGoods.setStockCount(seckillGoods.getStockCount() - 1);
+//        seckillGoods.setStockCount(seckillGoods.getStockCount() - 1);
         boolean result = seckillGoodsService.update(seckillGoods,new UpdateWrapper<SeckillGoods>().setSql("stock_count=" + "stock_count-1").eq("goods_id", seckillGoods.getId()).gt("stock_count", 0));
         if (seckillGoods.getStockCount()<1) {
             //减库存失败，商品卖完了
@@ -204,5 +207,32 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         detail.setOrder(order);
         detail.setGoodsVo(goodsVo);
         return detail;
+    }
+
+    /**
+     * 获取秒杀地址
+     *
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @Override
+    public String createPath(User user, Long goodsId) {
+        String str = MD5Util.md5(UUIDUtil.uuid()+"12345");
+        redisTemplate.opsForValue().set("seckillPath:"+user.getId()+":"+goodsId
+                ,str,60, TimeUnit.SECONDS);
+        return str;
+    }
+
+    @Override
+    public boolean checkPath(User user, Long goodsId, String path) {
+        if (user == null || path == null) {
+            return false;
+        }
+        String pathStr = redisTemplate.opsForValue().get("seckillPath:" + user.getId() + ":" + goodsId).toString();
+        if (!path.equals(pathStr)) {
+            return false;
+        }
+        return true;
     }
 }

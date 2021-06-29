@@ -24,10 +24,7 @@ import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -118,6 +115,84 @@ public class SecKillController implements InitializingBean {
         SeckillMessage seckillMessage = new SeckillMessage(user,goodsId);
         secKillRabbitmqSender.sendSeckillMessage(seckillMessage);
         return RespBean.success(0);
+    }
+
+
+    /**
+     * 秒杀 静态化   解决超卖问题    redis预减库存 rabbitmq消息入队    隐藏秒杀接口地址
+     * 10000*1*10
+     * windows优化前QPS:467.5/sec
+     * linux优化前QPS:94.4/sec
+     * <p>
+     * windows优化后QPS:1315.4/sec
+     * linux优化后QPS:94.4/sec
+     *
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/{path}/doSeckill", method = RequestMethod.POST)
+    @ResponseBody
+    public RespBean doSecKillPath(User user, @RequestParam("goodsId") Long goodsId, @PathVariable("path") String path) {
+        //判断用户是否登录
+        if (user == null) {
+            return RespBean.error(RespBeanEnum.SESSION_ERROR);
+        }
+
+        //隐藏接口，验证path
+        boolean check = orderService.checkPath(user, goodsId, path);
+        if (!check) {
+            return RespBean.error(RespBeanEnum.REQUEST_ILLEGAL);
+        }
+
+        //内存标记，减少redis访问
+        boolean over = emptyStockMap.get(goodsId);
+        if (over) {
+            return RespBean.error(RespBeanEnum.EMPTY_STOCK);
+        }
+
+        //redis操作
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        //判断是否重复抢购,从redis中读取
+        SeckillOrder seckillOrder = (SeckillOrder) valueOperations.get("order:" + user.getId() + ":" + goodsId);
+        if (seckillOrder != null) {
+            return RespBean.error(RespBeanEnum.REPEATE_ERROR);
+        }
+        //redis预减库存
+        Long stock = valueOperations.decrement("seckillGoods:" + goodsId);
+        if (stock < 0) {
+            emptyStockMap.put(goodsId, true);
+            return RespBean.error(RespBeanEnum.EMPTY_STOCK);
+        }
+
+        //入队
+        SeckillMessage seckillMessage = new SeckillMessage();
+        seckillMessage.setUser(user);
+        seckillMessage.setGoodsId(goodsId);
+        secKillRabbitmqSender.sendSeckillMessage(seckillMessage);
+
+        return RespBean.success();
+    }
+
+
+
+    /**
+     * 获取秒杀地址
+     *
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/path", method = RequestMethod.GET)
+    @ResponseBody
+    public RespBean getPath(User user,Long goodsId) {
+        //判断用户是否登录
+        if (user == null) {
+            return RespBean.error(RespBeanEnum.SESSION_ERROR);
+        }
+
+        String str = orderService.createPath(user,goodsId);
+        return RespBean.success(str);
     }
 
 

@@ -64,7 +64,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String ticket = UUIDUtil.uuid();
         request.getSession().setAttribute(ticket,user);
 //        //将用户信息存入redis中
-        redisTemplate.opsForValue().set("user"+ticket,user);
+        redisTemplate.opsForValue().set("user:"+ticket,user);
         CookieUtil.setCookie(request, response, "userTicket", ticket);
 //        return RespBean.success(ticket);
         return RespBean.success(ticket);
@@ -75,7 +75,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (StringUtils.isEmpty(userTicket)) {
             return null;
         }
-        User user = (User) redisTemplate.opsForValue().get("user" + userTicket);
+        User user = (User) redisTemplate.opsForValue().get("user:" + userTicket);
         if (user != null) {
             CookieUtil.setCookie(request,response,"userTicket",userTicket);
         }
