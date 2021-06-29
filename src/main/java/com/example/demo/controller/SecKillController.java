@@ -6,6 +6,7 @@ import com.example.demo.entity.Order;
 import com.example.demo.entity.SeckillOrder;
 import com.example.demo.entity.User;
 import com.example.demo.exception.GlobalException;
+import com.example.demo.interceptor.AccessLimit;
 import com.example.demo.rabbitmq.SecKillRabbitmqSender;
 import com.example.demo.rabbitmq.SeckillMessage;
 import com.example.demo.service.GoodsService;
@@ -136,6 +137,7 @@ public class SecKillController implements InitializingBean {
      * @param goodsId
      * @return
      */
+    @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
     @RequestMapping(value = "/{path}/doSeckill", method = RequestMethod.POST)
     @ResponseBody
     public RespBean doSecKillPath(User user, @RequestParam("goodsId") Long goodsId, @PathVariable("path") String path) {
@@ -290,6 +292,7 @@ public class SecKillController implements InitializingBean {
      * @param goodsId
      * @return
      */
+    @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
     @RequestMapping(value = "/verifyCode", method = RequestMethod.GET)
     @ResponseBody
     public void getVerifyCode(HttpServletResponse response, User user, Long goodsId) {
