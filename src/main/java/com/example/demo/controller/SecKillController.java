@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.SeckillOrder;
 import com.example.demo.entity.User;
+import com.example.demo.exception.GlobalException;
 import com.example.demo.rabbitmq.SecKillRabbitmqSender;
 import com.example.demo.rabbitmq.SeckillMessage;
 import com.example.demo.service.GoodsService;
@@ -15,6 +16,7 @@ import com.example.demo.vo.GoodsVo;
 import com.example.demo.vo.RespBean;
 import com.example.demo.vo.RespBeanEnum;
 import com.google.gson.Gson;
+import com.wf.captcha.ArithmeticCaptcha;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,13 @@ import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -185,12 +190,16 @@ public class SecKillController implements InitializingBean {
      */
     @RequestMapping(value = "/path", method = RequestMethod.GET)
     @ResponseBody
-    public RespBean getPath(User user,Long goodsId) {
+    public RespBean getPath(User user,Long goodsId,String verifyCode) {
         //判断用户是否登录
         if (user == null) {
             return RespBean.error(RespBeanEnum.SESSION_ERROR);
         }
-
+        //检查验证码
+        boolean check = orderService.checkVerifyCode(user, goodsId, verifyCode);
+        if (!check) {
+            return RespBean.error(RespBeanEnum.VERIFYCODE_ERROR);
+        }
         String str = orderService.createPath(user,goodsId);
         return RespBean.success(str);
     }
@@ -272,6 +281,40 @@ public class SecKillController implements InitializingBean {
         return "orderDetail";
     }
 
+
+    /**
+     * 获取验证码
+     *
+     * @param response
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/verifyCode", method = RequestMethod.GET)
+    @ResponseBody
+    public void getVerifyCode(HttpServletResponse response, User user, Long goodsId) {
+        //判断用户是否登录
+        if (user == null) {
+//            return RespBean.error(RespBeanEnum.SESSION_ERROR);
+            throw new GlobalException(RespBeanEnum.SESSION_ERROR);
+        }
+        // 设置请求头为输出图片类型
+        response.setContentType("image/gif");
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+
+        //生成验证码，将结果放入Redis
+        ArithmeticCaptcha captcha = new ArithmeticCaptcha(130,32,3);
+        redisTemplate.opsForValue().set("captcha"+user.getId()+":"+goodsId,
+                captcha.text(),300, TimeUnit.SECONDS);
+        try {
+            captcha.out(response.getOutputStream());
+        } catch (IOException e) {
+            log.error("验证码生成失败"+e.getMessage());
+        }
+//        return RespBean.success();
+    }
 
     /**
      * 系统初始化后，将商品库存数量加载到redis缓存

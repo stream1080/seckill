@@ -16,6 +16,7 @@ import com.example.demo.utils.UUIDUtil;
 import com.example.demo.vo.GoodsVo;
 import com.example.demo.vo.OrderDetailVo;
 import com.example.demo.vo.RespBeanEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -234,5 +235,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean checkVerifyCode(User user, Long goodsId, String verifyCode) {
+        if (StringUtils.isEmpty(verifyCode) || user == null || goodsId < 0){
+            return false;
+        }
+        String redisVerifyCode = (String) redisTemplate.opsForValue().get(
+                "captcha"+user.getId()+":"+goodsId);
+        return verifyCode.equals(redisVerifyCode);
     }
 }

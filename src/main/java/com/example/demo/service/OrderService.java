@@ -49,4 +49,14 @@ public interface OrderService extends IService<Order> {
      * @return
      */
     boolean checkPath(User user, Long goodsId, String path);
+
+    /**
+     * 校验验证码
+     *
+     * @param user
+     * @param goodsId
+     * @param verifyCode
+     * @return
+     */
+    boolean checkVerifyCode(User user, Long goodsId, String verifyCode);
 }
