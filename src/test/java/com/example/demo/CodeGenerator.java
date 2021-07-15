@@ -27,7 +27,7 @@ public class CodeGenerator {
         gc.setServiceName("%sService"); //去掉IService前面的I
         gc.setIdType(IdType.ID_WORKER);   //Id数据类型
         gc.setDateType(DateType.ONLY_DATE);   //时间类型
-        gc.setSwagger2(false); //实体属性 Swagger2 注解
+        gc.setSwagger2(false);  //实体属性 Swagger2 注解
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
@@ -43,10 +43,10 @@ public class CodeGenerator {
         PackageConfig pc = new PackageConfig();
 //        pc.setModuleName(scanner("模块名"));
         pc.setParent("com.example.demo");  //设置包名
-        pc.setEntity("entity");   //实体类包名
-        pc.setMapper("mapper");
-        pc.setService("service");
-        pc.setController("controller");
+        pc.setEntity("entity");         //实体类包名
+        pc.setMapper("mapper");         //mapper类包名
+        pc.setService("service");       //service类包名
+        pc.setController("controller"); //控制器包名
         mpg.setPackageInfo(pc);
 
         // 策略配置
@@ -57,11 +57,10 @@ public class CodeGenerator {
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);//驼峰命名转换
 //        strategy.setSuperEntityClass("你自己的父类实体,没有就不用设置!");
         strategy.setEntityLombokModel(true);  //是否试用Lombok
-        strategy.setRestControllerStyle(true); //是否使用Rest风格
+        strategy.setRestControllerStyle(true); //是否使用Rest风格的Controller
         strategy.setLogicDeleteFieldName("deleted");//设置逻辑删除
         //        TableField creatTime = new TableField("create_time", FieldFill.INSERT);//自动填充创建时间
         //        TableField updateTime = new TableField("update_time", FieldFill.UPDATE);//自动填充更新时间
-        strategy.setRestControllerStyle(true);
         strategy.setControllerMappingHyphenStyle(true);
         mpg.setStrategy(strategy);
 
