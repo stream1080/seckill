@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Title: SeckillRabbitmqConfig
- * Description:Topic模式，秒杀
+ * Description: Topic模式，秒杀
  */
 @Configuration
 public class SeckillRabbitmqConfig {

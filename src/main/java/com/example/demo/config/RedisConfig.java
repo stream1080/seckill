@@ -11,7 +11,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * Title: RedisConfig
- * Description:
+ * Description: Redis配置文件
  *
  */
 @Configuration
